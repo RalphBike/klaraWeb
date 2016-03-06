@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Klara-Map</title>
+	<meta charset="utf-8" />
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link rel="stylesheet" href="./klara-leaflet/leaflet.css" />
+</head>
+<body style="padding:20px; margin: 20px">
+	<div id="map" style="width: 980px; height: 520px"></div>
+
+	<script src="./klara-leaflet/leaflet.js"></script>
+	<script>
+		window.mobilecheck = function() {
+  var check = false;
+  (function(a){if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a)||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0,4)))
+  check = true})(navigator.userAgent||navigator.vendor||window.opera);
+  return check;
+}
+
+// http://codepen.io/KryptoniteDove/post/load-json-file-locally-using-pure-javascript
+function loadJSON(callback) {
+	var jsonPath = "./stuff/klara-locations.json";
+	var xobj = new XMLHttpRequest();
+		xobj.overrideMimeType("application/json");
+	xobj.open('GET', jsonPath, true); // Replace 'my_data' with the path to your file
+	xobj.onreadystatechange = function () {
+		  if (xobj.readyState == 4 && xobj.status == "200") {
+			// Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
+			callback(xobj.responseText);
+		  }
+	};
+	xobj.send(null);  
+}
+
+//	{"items":[
+//	{
+		//~ "id":"klara",
+		//~ "displayName":"Klara Lastenrad",
+		//~ "url":"https://klara.bike/cb_items/klara-lastenrad",
+		//~ "iconUrl":"TODO",
+		//~ "timeframes":[
+		//~ {
+			//~ "startDate":"2016-02-13T00:00:01.001+0100",
+			//~ "endDate":"2016-03-12T23:59:59.001+0100",
+			//~ "locName":"Velo 54",
+			//~ "locDistrict":"Wilhelmsburg",
+			//~ "locAddress":"Veringstraße 54, Hamburg",
+			//~ "locHours":"Mo-Fr 10h - 18h",
+			//~ "gpsLat":53.545738, 
+			//~ "gpsLon":9.984419
+		//~ },
+
+function getDataFromJsonObject(inpJson, inpItemId) 
+{
+	var timeDeltaMs = 7 * 24 * 3600000;
+	var timestamp0 = Date.now();	// Now
+	var timestamp1 = timestamp0 + timeDeltaMs; 	// Soon
+	
+	document.write("<br>inpJson.items.length: " + inpJson.items.length);
+	document.write("<ul>");
+
+	var foundSth0 = false;
+	var foundSth1 = false;
+
+	for (var ia=0;ia<inpJson.items.length;ia++)
+	{
+		var objItem = inpJson.items[ia];
+		var itemId = objItem.id;
+		if (inpItemId == itemId)
+		{
+			//var itemDisplayName = objItem.displayName;
+			//var itemUrl = objItem.url;
+			//var itemIconUrl = objItem.iconUrl;
+			document.write("<li>objItem.id: " + objItem.id+"</li>");
+			document.write("<ul>");
+			for (var ib=0;ib<objItem.timeframes.length;ib++)
+			{
+				var objTimeframe = objItem.timeframes[ib];
+				var startDate = new Date(objTimeframe.startDate);
+				var endDate = new Date(objTimeframe.endDate);
+				//var locName = objTimeframe.locName;
+				document.write("<li>objTimeframe.locName: " + objTimeframe.locName + "</li>");
+				document.write("<li>startDate: " + startDate + "</li>");
+				document.write("<li>endDate: " + endDate + "</li>");
+				if (startDate <= timestamp0 && timestamp0 <= endDate) // NOW
+				{
+					var itemStartDate0 = startDate;
+					var itemEndDate0 = endDate;
+					var locName0 = objTimeframe.locName;
+					//locDistrict0 = objTimeframe.locDistrict;
+					//locAddress0 = objTimeframe.locAddress;
+					//locHours0 = objTimeframe.locHours;
+					var gpsLat0 = objTimeframe.gpsLat; 
+					var gpsLon0 = objTimeframe.gpsLon;
+					foundSth0 = true;
+				}
+				else
+				{
+					if (startDate <= timestamp1 && timestamp1 <= endDate) // "Soon"
+					{
+						var itemStartDate1 = startDate;
+						var itemEndDate1 = endDate;
+						var locName1 = objTimeframe.locName;
+						//locDistrict1 = objTimeframe.locDistrict;
+						//locAddress1 = objTimeframe.locAddress;
+						//locHours1 = objTimeframe.locHours;
+						var gpsLat1 = objTimeframe.gpsLat; 
+						var gpsLon1 = objTimeframe.gpsLon;
+						foundSth1 = true;
+					}
+				}
+			}
+			document.write("</ul>");
+		}
+		document.write("</ul>");
+	}
+
+	if (foundSth0) {
+		document.write("<br> returning "+gpsLat0+" / "+gpsLon0+" / "+locName0+" / "+itemStartDate0+" / "+itemEndDate0);
+		return [gpsLat0, gpsLon0, locName0, itemStartDate0, itemEndDate0];
+	}
+	else 
+	{
+		if (foundSth1) 
+		{
+			document.write("<br> returning "+gpsLat1+" / "+gpsLon1+" / "+locName1+" / "+itemStartDate1+" / "+itemEndDate1);
+			return [gpsLat1, gpsLon1, locName1, itemStartDate1, itemEndDate1];
+		}
+	}
+	return false;
+}
+
+function createMapSingleItem(inpLocationData)
+{
+	document.write("<br> createMapSingleItem for "+inpLocationData[0]+" / "+inpLocationData[1]+" / "+inpLocationData[2]+" / "+inpLocationData[3]+" / "+inpLocationData[4]);
+	var mapSizeX = 980;
+	var mapSizeY = 520;
+	var borderX = 110;
+	var borderY = 90;
+	var zoomFactor = 14;
+	//var posLatLongCenter = addMapOffset(inpLocationData[0],inpLocationData[1],mapSizeX, mapSizeY, borderX, borderY, zoomFactor);
+	//getTileIdFromPos(inpLocationData[0],inpLocationData[1], zoomFactor);
+
+	var map = L.map('map').setView([inpLocationData[0],inpLocationData[1]], zoomFactor);
+
+	L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1Ijoia2xhcmFsYXN0ZW5yYWQiLCJhIjoiY2lqYTMxZXk0MDAyd3c0bTIxYnFpa2J1NyJ9.zCFA3xCgers_u9TSQ_3xFg', {
+	maxZoom: 18,
+	attribution: 'Map data &copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+		'<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+		'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+	id: 'mapbox.streets'
+	}).addTo(map);
+	L.marker([inpLocationData[0],inpLocationData[1]]).addTo(map)
+	.bindPopup("<b>"+"TODONAME"+"</b><br />"+"TODOTIMEFRAME"+"<br /> <a href=\"https://klara.bike/cb_items/klara-lastenrad\" target=\"_parent\" >Hier buchen</a>");
+
+	var popup = L.popup();
+	function onMapClick(e) {
+		popup
+			.setLatLng(e.latlng)
+			.setContent("You clicked the map at " + e.latlng.toString())
+			.openOn(map);
+		}
+	map.on('click', onMapClick);
+}
+
+function loadJsonAndCreateMap(inpItemId) {
+	var jsonPath = "./stuff/klara-locations.json";
+
+
+	//var reader = new FileReader();
+	//reader.readAsText(jsonPath);
+	//var myJSONtext = reader.result;
+	//document.write("<br>myJSONtext : " + myJSONtext);
+	//var myObject = JSON.parse(myJSONtext, reviver);
+	
+	loadJSON(function(response) {
+	// Parse JSON string into object
+		var jsonObject = JSON.parse(response);
+		locationData = getDataFromJsonObject(jsonObject, inpItemId);
+		
+		if (locationData)
+		{
+			createMapSingleItem(locationData);
+		}
+	});
+}
+
+	loadJsonAndCreateMap("klara");
+	
+	</script>
+</body>
+</html>
