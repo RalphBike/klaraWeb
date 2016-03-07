@@ -6,12 +6,12 @@
 
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<link rel="stylesheet" href="./klara-leaflet/leaflet.css" />
+	<link rel="stylesheet" href="https://klara.bike/klara-leaflet/leaflet.css" />
 </head>
 <body style="padding:20px; margin: 20px">
 	<div id="map" style="width: 980px; height: 520px"></div>
 
-	<script src="./klara-leaflet/leaflet.js"></script>
+	<script src="https://klara.bike/klara-leaflet/leaflet.js"></script>
 	<script>
 		window.mobilecheck = function() {
   var check = false;
@@ -22,7 +22,7 @@
 
 // http://codepen.io/KryptoniteDove/post/load-json-file-locally-using-pure-javascript
 function loadJSON(callback) {
-	var jsonPath = "./stuff/klara-locations.json";
+	var jsonPath = "https://klara.bike/stuff/klara-locations.json";
 	var xobj = new XMLHttpRequest();
 		xobj.overrideMimeType("application/json");
 	xobj.open('GET', jsonPath, true); // Replace 'my_data' with the path to your file
@@ -167,7 +167,7 @@ function createMapSingleItem(inpLocationData)
 }
 
 function loadJsonAndCreateMap(inpItemId) {
-	var jsonPath = "./stuff/klara-locations.json";
+	var jsonPath = "https://klara.bike/stuff/klara-locations.json";
 
 
 	//var reader = new FileReader();
